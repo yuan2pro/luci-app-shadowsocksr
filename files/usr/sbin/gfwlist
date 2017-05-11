@@ -1,0 +1,6 @@
+#!/bin/sh
+cat /etc/gfwlist/gfwlist | awk '{print "server=/"$1"/127.0.0.1#7913\nipset=/"$1"/gfwlist"}' >> /tmp/custom.conf
+mv /tmp/custom.conf /etc/dnsmasq.d/custom.conf
+rm -f /tmp/custom.conf
+rm -f /tmp/dnsmasq.d/custom.conf
+ipset -F gfwlist
