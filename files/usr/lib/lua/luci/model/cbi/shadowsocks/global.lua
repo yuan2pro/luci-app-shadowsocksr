@@ -74,15 +74,15 @@ t=a:section(TypedSection,"servers",translate("Servers List"))
 t.anonymous=true
 t.addremove=true
 t.template="cbi/tblsection"
-t.extedit=o.build_url("admin","network","shadowsocks","serverconfig","%s")
+t.extedit=o.build_url("admin","services","shadowsocks","serverconfig","%s")
 function t.create(e,t)
 local e=TypedSection.create(e,t)
-luci.http.redirect(o.build_url("admin","network","shadowsocks","serverconfig",e))
+luci.http.redirect(o.build_url("admin","services","shadowsocks","serverconfig",e))
 end
 function t.remove(t,a)
 t.map.proceed=true
 t.map:del(a)
-luci.http.redirect(o.build_url("admin","network","shadowsocks"))
+luci.http.redirect(o.build_url("admin","services","shadowsocks"))
 end
 e=t:option(DummyValue,"remarks",translate("Node Remarks"))
 e.width="30%"

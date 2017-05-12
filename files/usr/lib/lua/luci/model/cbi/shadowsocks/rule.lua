@@ -12,7 +12,7 @@ o=s:option(Button,"_start",translate("Manually update rules"))
 o.inputstyle="apply"
 function o.write(e,e)
 luci.sys.call("/usr/share/shadowsocks/ssruleupdate")
-luci.http.redirect(luci.dispatcher.build_url("admin","network","shadowsocks","rule"))
+luci.http.redirect(luci.dispatcher.build_url("admin","services","shadowsocks","rule"))
 end
 o=s:option(Flag,"auto_update",translate("Enable auto update rules"))
 o.default=0
