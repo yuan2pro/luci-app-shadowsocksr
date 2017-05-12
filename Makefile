@@ -43,7 +43,7 @@ if [ -z "$${IPKG_INSTROOT}" ]; then
 	if [ -f /etc/uci-defaults/luci-shadowsocks ]; then
 		( . /etc/uci-defaults/luci-shadowsocks ) && rm -f /etc/uci-defaults/luci-shadowsocks
 	fi
-	rm -rf /tmp/luci-indexcache /tmp/luci-modulecache
+	rm -rf /tmp/luci-indexcache
 fi
 if [ -f "/usr/sbin/haproxy" ]; then
 	haproxypid=$$(pidof haproxy)
