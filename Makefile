@@ -31,11 +31,19 @@ endef
 
 define Package/$(PKG_NAME)/postinst
 #!/bin/sh
-if [ ! -f "/usr/sbin/ip" ]; then
+if [ -z "$${IPKG_INSTROOT}" ]; then
+	if [ -f "/usr/sbin/ip" ]; then
+		rm -f /usr/sbin/ip
+	fi
+	if [ -f "/usr/bin/ip" ]; then
+		rm -f /usr/bin/ip
+	fi
 	if [ -f "/sbin/ip-full" ]; then
 		ln -s /sbin/ip-full /usr/sbin/ip
+		ln -s /sbin/ip-full /usr/bin/ip
 	else
 		ln -s /sbin/ip /usr/sbin/ip
+		ln -s /sbin/ip /usr/bin/ip
 	fi
 fi
 if [ -z "$${IPKG_INSTROOT}" ]; then
@@ -44,40 +52,44 @@ if [ -z "$${IPKG_INSTROOT}" ]; then
 	fi
 	rm -rf /tmp/luci-indexcache
 fi
-if [ -f "/usr/sbin/haproxy" ]; then
-	haproxypid=$$(pidof haproxy)
-	if [ -n "$$haproxypid" ]; then
-		echo haproxy stopped...
-		/etc/init.d/haproxy stop
+if [ -z "$${IPKG_INSTROOT}" ]; then
+	if [ -f "/usr/sbin/haproxy" ]; then
+		haproxypid=$$(pidof haproxy)
+		if [ -n "$$haproxypid" ]; then
+			echo haproxy stopped...
+			/etc/init.d/haproxy stop
+		fi
+		echo haproxy disabled...
+		/etc/init.d/haproxy disable
+	
+		if [ -f "/etc/hotplug.d/net/90-haproxy" ]; then
+			rm /etc/hotplug.d/net/90-haproxy
+		fi
+		if [ -f "/usr/bin/haproxy" ]; then
+			rm /usr/bin/haproxy
+		fi
+		ln -s /usr/sbin/haproxy /usr/bin/haproxy
 	fi
-	echo haproxy disabled...
-	/etc/init.d/haproxy disable
-
-	if [ -f "/etc/hotplug.d/net/90-haproxy" ]; then
-		rm /etc/hotplug.d/net/90-haproxy
-	fi
-	if [ -f "/usr/bin/haproxy" ]; then
-		rm /usr/bin/haproxy
-	fi
-	ln -s /usr/sbin/haproxy /usr/bin/haproxy
 fi
-if [ -f "/etc/init.d/chinadns" ]; then
-	chinadnspid=$$(pidof chinadns)
-	if [ -n "$$chinadnspid" ]; then
-		echo chinadns stopped...
-		/etc/init.d/chinadns stop
+if [ -z "$${IPKG_INSTROOT}" ]; then
+	if [ -f "/etc/init.d/chinadns" ]; then
+		chinadnspid=$$(pidof chinadns)
+		if [ -n "$$chinadnspid" ]; then
+			echo chinadns stopped...
+			/etc/init.d/chinadns stop
+		fi
+		echo chinadns init script disabled...
+		/etc/init.d/chinadns disable
 	fi
-	echo chinadns init script disabled...
-	/etc/init.d/chinadns disable
-fi
-if [ -f "/etc/init.d/dns-forwarder" ]; then
-	dnsforwarderpid=$$(pidof dns-forwarder)
-	if [ -n "$$dnsforwarderpid" ]; then
-		echo dns-forwarder stopped...
-		/etc/init.d/dns-forwarder stop
+	if [ -f "/etc/init.d/dns-forwarder" ]; then
+		dnsforwarderpid=$$(pidof dns-forwarder)
+		if [ -n "$$dnsforwarderpid" ]; then
+			echo dns-forwarder stopped...
+			/etc/init.d/dns-forwarder stop
+		fi
+		echo dns-forwarder init script disabled...
+		/etc/init.d/dns-forwarder disable
 	fi
-	echo dns-forwarder init script disabled...
-	/etc/init.d/dns-forwarder disable
 fi
 exit 0
 endef
