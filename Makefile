@@ -31,13 +31,12 @@ endef
 
 define Package/$(PKG_NAME)/postinst
 #!/bin/sh
-if [ -f "/usr/sbin/ip" ]; then
-	rm -f /usr/sbin/ip
-fi
-if [ -f "/sbin/ip-full" ]; then
-	ln -s /sbin/ip-full /usr/sbin/ip
-else
-	ln -s /sbin/ip /usr/sbin/ip
+if [ ! -f "/usr/sbin/ip" ]; then
+	if [ -f "/sbin/ip-full" ]; then
+		ln -s /sbin/ip-full /usr/sbin/ip
+	else
+		ln -s /sbin/ip /usr/sbin/ip
+	fi
 fi
 if [ -z "$${IPKG_INSTROOT}" ]; then
 	if [ -f /etc/uci-defaults/luci-shadowsocks ]; then
